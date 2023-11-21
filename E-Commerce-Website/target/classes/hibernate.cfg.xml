@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE hibernate-configuration PUBLIC "-//Hibernate/Hibernate Configuration DTD 3.0//EN"
+	"http://www.hibernate.org/dtd/hibernate-configuration-3.0.dtd">
+	
+<hibernate-configuration>
+	<session-factory>
+	
+		
+        
+        <property name="connection.url">jdbc:mysql://localhost:3306/mycart</property>  
+        <property name="connection.username">root</property>  
+        <property name="connection.password">root</property>  
+        <property name="dialect">org.hibernate.dialect.MySQL8Dialect</property>  
+        <property name="connection.driver_class">com.mysql.jdbc.Driver</property>  
+        <property name="hbm2ddl.auto">update</property> 
+         
+        <property name="hibernate.current_session_context_class">thread</property>
+        <property name="hibernate.show_sql">true</property>
+       
+       
+       <!-- XML based configuration -->
+       <!--  mapping resource="employee.hbm.xml"/-->
+       
+		<!-- Annotation Based configuration to create tables-->
+		<mapping class="com.mycart.entities.User"/>
+		<mapping class="com.mycart.entities.Category"/>
+		<mapping class="com.mycart.entities.Product"/>
+		
+	</session-factory>
+</hibernate-configuration>

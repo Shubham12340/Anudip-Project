@@ -1,0 +1,126 @@
+@CHARSET "ISO-8859-1";
+
+/*It is used to add image on background for all pages */
+body{
+	background: url(../img/nature6.jpg);
+	background-size: cover;
+}
+
+
+/*It is used to make navigation bar transparent and to apply color on backgroung of navigation bar*/
+.custom-bg{
+	background:#212121!important;
+	opacity:0.8;
+}
+
+
+/*It is used to add all image src and align it properly with it's width*/
+img{
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
+  width: 30%;
+}
+
+/*It is used to form text Bold and color as blue*/
+.form-group{
+	color: blue;
+	font-weight: bold;
+}
+
+
+/* We are targetting all the cards present in the admin container i.e <div class="container admin"> */
+.admin .card{
+	border:3px solid red;
+}
+
+/*Adding hovering effect when the cursor is on the cards of admin page*/
+.admin .card:hover{
+	 background:#78909c;
+	 cursor: pointer;'
+}
+
+/*class of All Products heading present on home page i.e index.jsp*/
+.list-group-item.active {
+    z-index: 2;
+    color: #fff;
+    background: #212121!important;
+    border-color:#212121!important;
+    opacity:0.8;
+  }
+   
+/*Targetting the image of product*/    
+.card-img-top{
+ max-height: 150px; 
+ max-width: 100%; 
+ width:auto; 
+ margin:auto; 
+ text-align: center;  
+ transform-origin: 0 0;
+  transition: transform .25s, visibility .25s ease-in;
+}
+
+/*Targetting the image of product for hovering effect*/
+.card-img-top:hover{
+	cursor: zoom-in;
+	filter: brightness(100%);
+	transform: scale(1.2); 
+}
+
+/*Targeting the discount and original price of product */
+.discount-label{
+	font-size:12px!important;
+	font-style: italic!important;
+}
+
+/*Targetting the Product Card*/
+.product-card:hover{
+	background:#cfd8dc;
+	 cursor: pointer;'	
+}
+
+
+/*Toast Message styling*/
+#toast{
+ min-width: 300px;
+ position: fixed;
+ bottom: 30px;
+ left: 50%;
+ margin-left: -120px;
+ background: #333;
+ padding: 15px;
+ color: white;
+ text-align: center;
+ z-index:1;
+ font-size: 18px;
+ visibility: hidden;
+ box-shadow: 0px 0px 100px #000;
+}	
+
+#toast.display{
+ visibility: visible;
+ animation: fadeIn 0.5s, fadeOut 0.5s 2.5s;
+}
+
+@keyframes fadeIn{
+from{
+ 	bottom:0;
+ 	opacity:0
+}
+to{
+	bottom: 30px;
+	opacity:1;
+}
+}
+
+@keyframes fadeOut{
+from{
+
+	bottom: 30px;
+	opacity:1;
+}
+to{
+	bottom: 0;
+	opacity:0;
+}
+}

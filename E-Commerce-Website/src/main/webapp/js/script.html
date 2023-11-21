@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="ISO-8859-1">
+<title>Insert title here</title>
+</head>
+<body>
+
+<script type="text/javascript">
+
+
+//we need to pass pid,pname,,price when we call the function add_to_cart()
+function add_to_cart(pid,pname,price)
+{
+
+	//getting item by passing key as cart and storing it into cart variable;
+	let cart= localStorage.getItem("cart");
+	
+	//to check whether the cart is empty, this will work only for first time adding the product
+	if(cart==null)
+	{
+		//no cart yet
+		
+		//crating array of products and storing all products in that array only by using push method
+		let products=[];
+		
+		//creating product object with key and value pair by giving pid,pname, productQantity will be 1 initially as cart is empty, price 
+		//to print value any value from this object we will write as product.productId , product.productName,  product.productQuantity, product.productPrice
+		let product={ productId:pid, productName:pname, productQuantity:1, productPrice:price }
+		
+		//putting the product into products array
+		products.push(product);
+		
+		
+		//putting/updating the product into localStorage using setItem method
+		//JSON.stringify is used to convert product content from array to string cause product is an array and passing to the key cart by using localStorage.getItem("cart"); 
+		localStorage.setItem("cart", JSON.stringify(products));
+		
+		console.log("Product is added for the first time");
+		showToast("Product is Added To Cart For The First Time!!");	
+	}
+	//else will run when we press add to cart button 2nd time i.e some product is there in the cart in that case only else will execute
+	else{
+		
+		//cart is already present
+		
+		//We used JSON.parse to convert string into an array(cart) of javascript because cart contains String which it  getting from localStorage.setItem("cart", JSON.stringify(products));
+		//pcart is an array in which we stored cart which we get from "let cart= localStorage.getItem("cart");"
+		let pcart=JSON.parse(cart);
+		
+		//this is actually a lamda function act as a callback function in javascript which will find from pcart that any product same product is already there and addedd 2nd time  
+		//and it will store if any same product is added 2nd time into a variable oldProduct
+		let oldProduct= pcart.find((item)=> item.productId == pid)
+		
+		//if oldProduct is true that means there is same product is added twice and we need to increase the quantity  
+		if(oldProduct){
+			
+			//we need to increase the quantity of oldProduct which we have collected using lamda expression
+			oldProduct.productQuantity = oldProduct.productQuantity+1;
+			
+			//we are traversing through pcart in order to find our oldProduct
+			pcart.map((item)=>{
+				
+				//in this condition as soon as our oldProduct is get found in pcart using item.ProductId i.e productId get matched with the oldProductId
+				//we will update the item.productQuantity to the updated oldProductQuantity
+				if(item.productId == oldProduct.productId){
+					
+					item.prouductQuantity= oldProduct.productQuantity;
+				}
+				
+			})
+			//And finally we will update the cart after increasing the quantity of old product
+			localStorage.setItem("cart",JSON.stringify(pcart));
+			
+			console.log("Product quantity is increased");
+			showToast(oldProduct.productName+ " Quantity is Increased!!, Quantity = "+ oldProduct.productQuantity);	
+		}
+		//this will run if any new product is added which is not already there in the cart
+		else{
+						
+			//we need to add new product using same as we did in case of emty cart
+			let product={ productId:pid, productName:pname, productQuantity:1, productPrice:price }
+			
+			//and now putting the product into pcart array
+			pcart.push(product);
+			
+			//updating the cart after new product get added by passing pcart  array as type String as we used JSON.stringify(pcart);
+			localStorage.setItem("cart",JSON.stringify(pcart));
+			
+			console.log("New Product is Added");
+			
+			showToast("New Product is Added To The Cart Successfully!!")
+			
+		}
+    }
+	
+	updateCart();	
+}
+
+//update cart
+function updateCart(){
+	//fetching cart from local storage using localStorage and set it into variable cartString();
+	let cartString= localStorage.getItem("cart"); 
+	
+	//Converting String variabl cartString into cart object using parse method
+	let cart= JSON.parse(cartString);
+	
+	
+	//Checking whether cart is empty if it so then setting count as 0 only
+	if(cart==null || cart.length==0){
+		
+		//printing message on browser console that  cart is empty
+		console.log("Cart is empty!!!")
+		
+		//here we are tagetting cart-items class of counter ( 0 ) i.e <span class="ml-0 cart-items"> ( 0 ) </span>
+		$(".cart-items").html("( 0 )");
+		
+		//here we are tagretting cart-body class of modal to print there is no item in a cart
+		$(".cart-body").html("<h3>Cart does not have any item</h3>");
+		
+		//here we are tagetting checkout-btn class of modal to make it disabled
+		$(".checkout-btn").attr("disabled",true);
+		
+	}
+	else{
+		
+		//there is something in cart to show
+		//printing cart on console of a browser
+		console.log(cart);
+		
+		//here we are targetting counter and increasing counter as per items
+		$(".cart-items").html(`( ${cart.length} )`);
+		
+		//Creating table and put it into table object
+		let table=`
+		<table class="table">
+		<thead class="thead-light">
+			
+			<tr>
+				
+				<th>Item Name</th>
+				
+				<th>Price</th>
+				
+				<th>Quantity</th>
+				
+				<th>Total Price</th>
+				
+				<th>Action</th>
+				
+		
+			</tr>
+		
+		</thead>
+		
+		`;
+		
+		//here total price is initially 0
+		let totalPrice=0;
+		
+		//here we are treaversing cart using map function and appending every item using table +=
+		//For every item there is a new row	
+		cart.map((item)=>{
+			
+			table +=`
+				<tr>
+					<td> ${item.productName} </td>
+					<td> ${item.productPrice} </td>
+					<td> ${item.productQuantity} </td>
+					<td> ${item.productPrice * item.productQuantity} </td>
+					<td><button onclick="deleteItemFromCart(${item.productId})"  class="btn btn-danger btn-sm">Remove</button></td>
+				
+				</tr>
+			`;
+			
+			//Here total price will get calculated after multiplyitng with productQuantity
+			totalPrice += item.productPrice * item.productQuantity;
+		})
+		
+	
+		
+		table= table+`
+		
+		<tr><td colspan="5" class="text-right font-weight-bold m-5" style="color:blue;"> Grand Total: ${totalPrice} </td></tr>
+		</table>`
+		//here we are targetting cart-body class to show cart values using table hence we are passing table as it is
+		$(".cart-body").html(table);
+
+		//here we are tagetting checkout-btn class of modal to make false to disabled class since cart contains some products
+		$(".checkout-btn").attr("disabled",false);
+		
+		}
+	}
+
+//This function will delete by taking pid as a parameter
+ function deleteItemFromCart(pid){
+	 
+	 //this will convert string into object cart
+	 let cart = JSON.parse(localStorage.getItem("cart"));
+	 
+	 //This filter will collect those items except that item on which we clicked delete
+	 let newcart= cart.filter((item)=> item.productId !=pid);
+ 
+	 //this will update the original cart
+	 localStorage.setItem("cart",JSON.stringify(newcart));
+	 
+	 showToast("Product is removed from the cart!!!");
+	
+		
+	 //This will finally update the GUI after calling updateCart function
+ 	 updateCart();
+	 
+	 showToast("Product is removed from cart");
+ }
+ 
+$(document).ready(function(){
+		updateCart();
+	})	
+
+//function used to give toast message
+function showToast(content){
+	
+	$("#toast").addClass("display");
+	$("#toast").html(content);
+	setTimeout(()=>
+			{
+				$("#toast").removeClass("display");}, 2000)
+			
+	}
+	
+//this function will redirect to checkout.jsp page after clicking Checkout buttton	
+function goToCheckout(){
+	
+	window.location="checkout.jsp";
+}	
+
+function goToIndexPage(){
+	
+	window.location="about.jsp";
+}
+
+
+
+</script>
+
+</body>
+</html>
